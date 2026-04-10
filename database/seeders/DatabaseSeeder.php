@@ -2,9 +2,12 @@
 
 namespace Database\Seeders;
 
+use App\Models\AreaParkir;
+use App\Models\Tarif;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -15,11 +18,60 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        // Create admin user
+        User::create([
+            'nama_lengkap' => 'Administrator',
+            'username' => 'admin',
+            'password' => Hash::make('admin123'),
+            'role' => 'admin',
+            'status_aktif' => true,
+        ]);
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        // Create petugas user
+        User::create([
+            'nama_lengkap' => 'Petugas Parkir',
+            'username' => 'petugas',
+            'password' => Hash::make('petugas123'),
+            'role' => 'petugas',
+            'status_aktif' => true,
+        ]);
+
+        // Create owner user
+        User::create([
+            'nama_lengkap' => 'Owner Parkir',
+            'username' => 'owner',
+            'password' => Hash::make('owner123'),
+            'role' => 'owner',
+            'status_aktif' => true,
+        ]);
+
+        // Create tarifs
+        Tarif::create([
+            'jenis_kendaraan' => 'motor',
+            'tarif_per_jam' => 2000,
+        ]);
+
+        Tarif::create([
+            'jenis_kendaraan' => 'mobil',
+            'tarif_per_jam' => 5000,
+        ]);
+
+        Tarif::create([
+            'jenis_kendaraan' => 'lainnya',
+            'tarif_per_jam' => 10000,
+        ]);
+
+        // Create areas
+        AreaParkir::create([
+            'nama_area' => 'Area A',
+            'kapasitas' => 50,
+            'terisi' => 0,
+        ]);
+
+        AreaParkir::create([
+            'nama_area' => 'Area B',
+            'kapasitas' => 30,
+            'terisi' => 0,
         ]);
     }
 }
