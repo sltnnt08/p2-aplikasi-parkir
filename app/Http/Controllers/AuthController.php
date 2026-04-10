@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\LogAktivitas;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -23,19 +22,14 @@ class AuthController extends Controller
         $credentials = $request->only('username', 'password');
 
         if (Auth::attempt($credentials)) {
+            $request->session()->regenerate();
+
             $user = Auth::user();
             if (! $user->status_aktif) {
                 Auth::logout();
 
                 return back()->withErrors(['username' => 'Akun tidak aktif.']);
             }
-
-            // Log login
-            LogAktivitas::create([
-                'id_user' => $user->id_user,
-                'aktivitas' => 'Login',
-                'waktu_aktivitas' => now(),
-            ]);
 
             // Redirect based on role
             switch ($user->role) {
@@ -57,16 +51,6 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
-        $user = Auth::user();
-        if ($user) {
-            // Log logout
-            LogAktivitas::create([
-                'id_user' => $user->id_user,
-                'aktivitas' => 'Logout',
-                'waktu_aktivitas' => now(),
-            ]);
-        }
-
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();

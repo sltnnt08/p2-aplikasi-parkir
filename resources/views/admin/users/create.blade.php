@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.app')
 
 @section('title', 'Tambah User - Admin')
 
@@ -27,9 +27,6 @@
                     placeholder="Masukkan nama lengkap"
                     required
                 >
-                @error('nama_lengkap')
-                    <p class="mt-2 text-xs text-[#dc2626]">{{ $message }}</p>
-                @enderror
             </div>
 
             <!-- Username -->
@@ -44,9 +41,6 @@
                     placeholder="Masukkan username"
                     required
                 >
-                @error('username')
-                    <p class="mt-2 text-xs text-[#dc2626]">{{ $message }}</p>
-                @enderror
             </div>
 
             <!-- Password -->
@@ -60,9 +54,6 @@
                     placeholder="Masukkan password minimal 6 karakter"
                     required
                 >
-                @error('password')
-                    <p class="mt-2 text-xs text-[#dc2626]">{{ $message }}</p>
-                @enderror
             </div>
 
             <!-- Role -->
@@ -79,9 +70,20 @@
                     <option value="petugas" {{ old('role') === 'petugas' ? 'selected' : '' }}>Petugas</option>
                     <option value="owner" {{ old('role') === 'owner' ? 'selected' : '' }}>Owner</option>
                 </select>
-                @error('role')
-                    <p class="mt-2 text-xs text-[#dc2626]">{{ $message }}</p>
-                @enderror
+            </div>
+
+            <!-- Status -->
+            <div>
+                <label for="status_aktif" class="block text-sm font-semibold text-[#191c1e] mb-2">Status</label>
+                <select
+                    id="status_aktif"
+                    name="status_aktif"
+                    class="w-full px-4 py-2.5 rounded-lg bg-[#f2f4f7] text-[#191c1e] focus:bg-white focus:outline-none focus:ring-2 focus:ring-opacity-30 transition-all {{ $errors->has('status_aktif') ? 'focus:ring-red-300' : 'focus:ring-[#0058be]' }}"
+                    required
+                >
+                    <option value="1" {{ old('status_aktif', '1') == 1 ? 'selected' : '' }}>Aktif</option>
+                    <option value="0" {{ old('status_aktif', '1') == 0 ? 'selected' : '' }}>Nonaktif</option>
+                </select>
             </div>
 
             <!-- Buttons -->
@@ -103,3 +105,4 @@
     </div>
 </div>
 @endsection
+

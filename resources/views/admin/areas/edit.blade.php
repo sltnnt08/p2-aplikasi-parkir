@@ -24,13 +24,10 @@
                     id="nama_area"
                     name="nama_area"
                     value="{{ old('nama_area', $area->nama_area) }}"
-                    class="w-full px-4 py-2.5 rounded-lg bg-[#f2f4f7] text-[#191c1e] placeholder-[#94a3b8] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#0058be] focus:ring-opacity-30 transition-all @error('nama_area') focus:ring-red-300 @enderror"
+                    class="w-full px-4 py-2.5 rounded-lg bg-[#f2f4f7] text-[#191c1e] placeholder-[#94a3b8] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#0058be] focus:ring-opacity-30 transition-all"
                     placeholder="Masukkan nama area"
                     required
                 >
-                @error('nama_area')
-                    <p class="mt-2 text-xs text-[#dc2626]">{{ $message }}</p>
-                @enderror
             </div>
 
             <!-- Kapasitas -->
@@ -41,14 +38,11 @@
                     id="kapasitas"
                     name="kapasitas"
                     value="{{ old('kapasitas', $area->kapasitas) }}"
-                    class="w-full px-4 py-2.5 rounded-lg bg-[#f2f4f7] text-[#191c1e] placeholder-[#94a3b8] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#0058be] focus:ring-opacity-30 transition-all @error('kapasitas') focus:ring-red-300 @enderror"
+                    class="w-full px-4 py-2.5 rounded-lg bg-[#f2f4f7] text-[#191c1e] placeholder-[#94a3b8] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#0058be] focus:ring-opacity-30 transition-all"
                     placeholder="Masukkan kapasitas area"
                     min="1"
                     required
                 >
-                @error('kapasitas')
-                    <p class="mt-2 text-xs text-[#dc2626]">{{ $message }}</p>
-                @enderror
             </div>
 
             <!-- Info Terisi -->
@@ -79,3 +73,4 @@
     </div>
 </div>
 @endsection
+

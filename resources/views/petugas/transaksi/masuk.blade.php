@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.app')
 
 @section('title', 'Kendaraan Masuk')
 
@@ -28,9 +28,33 @@
                     required
                     autofocus
                 >
-                @error('plat_nomor')
-                    <p class="mt-2 text-xs text-[#dc2626]">{{ $message }}</p>
-                @enderror
+            </div>
+
+            <!-- Warna Kendaraan -->
+            <div>
+                <label for="warna" class="block text-sm font-semibold text-[#191c1e] mb-2">Warna Kendaraan</label>
+                <input
+                    type="text"
+                    id="warna"
+                    name="warna"
+                    value="{{ old('warna') }}"
+                    class="w-full px-4 py-2.5 rounded-lg bg-[#f2f4f7] text-[#191c1e] placeholder-[#94a3b8] focus:bg-white focus:outline-none focus:ring-2 focus:ring-opacity-30 transition-all {{ $errors->has('warna') ? 'focus:ring-red-300' : 'focus:ring-[#0058be]' }}"
+                    placeholder="Contoh: Hitam"
+                    required
+                >
+            </div>
+
+            <!-- Pemilik Kendaraan -->
+            <div>
+                <label for="pemilik" class="block text-sm font-semibold text-[#191c1e] mb-2">Nama Pemilik (Opsional)</label>
+                <input
+                    type="text"
+                    id="pemilik"
+                    name="pemilik"
+                    value="{{ old('pemilik') }}"
+                    class="w-full px-4 py-2.5 rounded-lg bg-[#f2f4f7] text-[#191c1e] placeholder-[#94a3b8] focus:bg-white focus:outline-none focus:ring-2 focus:ring-opacity-30 transition-all {{ $errors->has('pemilik') ? 'focus:ring-red-300' : 'focus:ring-[#0058be]' }}"
+                    placeholder="Contoh: Budi Santoso"
+                >
             </div>
 
             <!-- Area Parkir -->
@@ -49,9 +73,6 @@
                         </option>
                     @endforeach
                 </select>
-                @error('id_area')
-                    <p class="mt-2 text-xs text-[#dc2626]">{{ $message }}</p>
-                @enderror
             </div>
 
             <!-- Tarif -->
@@ -70,9 +91,6 @@
                         </option>
                     @endforeach
                 </select>
-                @error('id_tarif')
-                    <p class="mt-2 text-xs text-[#dc2626]">{{ $message }}</p>
-                @enderror
             </div>
 
             <!-- Buttons -->
@@ -94,3 +112,4 @@
     </div>
 </div>
 @endsection
+

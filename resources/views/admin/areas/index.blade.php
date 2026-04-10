@@ -15,14 +15,6 @@
         </a>
     </div>
 
-    <!-- Success Message -->
-    @if(session('success'))
-        <div class="p-4 bg-[#ecfdf5] border border-[#d1fae5] rounded-lg flex items-center gap-3">
-            <svg class="w-5 h-5 text-[#059669] shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
-            <p class="text-sm font-medium text-[#065f46]">{{ session('success') }}</p>
-        </div>
-    @endif
-
     <!-- Areas Grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         @forelse($areas as $area)
@@ -33,7 +25,7 @@
                         <h3 class="text-lg font-semibold text-[#191c1e]">{{ $area->nama_area }}</h3>
                         <p class="text-sm text-[#64748b] mt-1">Area {{ $area->id_area }}</p>
                     </div>
-                    <svg class="w-8 h-8 text-[#3B82F6]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                    <iconify-icon icon="mdi:map-marker-radius" class="w-8 h-8 text-[#3B82F6]"></iconify-icon>
                 </div>
 
                 <!-- Capacity Info -->

@@ -67,6 +67,16 @@ class AuthorizationTest extends TestCase
         $response->assertStatus(403);
     }
 
+    public function test_inactive_admin_is_logged_out_from_protected_route(): void
+    {
+        $this->admin->update(['status_aktif' => false]);
+
+        $response = $this->actingAs($this->admin)->get('/admin/dashboard');
+
+        $response->assertRedirect(route('login'));
+        $this->assertGuest();
+    }
+
     // Admin User Management Tests
     public function test_admin_can_access_users_management_route(): void
     {
@@ -97,6 +107,7 @@ class AuthorizationTest extends TestCase
             'username' => 'newuser',
             'password' => 'password123',
             'role' => 'petugas',
+            'status_aktif' => true,
         ]);
 
         $response->assertRedirect();
@@ -109,6 +120,7 @@ class AuthorizationTest extends TestCase
             'username' => 'newuser',
             'password' => 'password123',
             'role' => 'petugas',
+            'status_aktif' => true,
         ]);
 
         $response->assertStatus(403);

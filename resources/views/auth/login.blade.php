@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
@@ -8,6 +8,37 @@
     <script src="https://code.iconify.design/iconify-icon/1.0.8/iconify-icon.min.js"></script>
 </head>
 <body class="min-h-screen flex items-center justify-center px-6 py-8 relative overflow-hidden" style="background: linear-gradient(90deg, rgb(247, 249, 252) 0%, rgb(247, 249, 252) 100%)">
+    @php
+        $notifications = [];
+
+        foreach (['success', 'error', 'warning', 'info'] as $type) {
+            $message = session($type);
+
+            if (is_string($message) && $message !== '') {
+                $notifications[] = [
+                    'type' => $type,
+                    'message' => $message,
+                ];
+            }
+        }
+
+        if ($errors->any()) {
+            foreach (array_unique($errors->all()) as $errorMessage) {
+                $notifications[] = [
+                    'type' => 'error',
+                    'message' => $errorMessage,
+                ];
+            }
+        }
+
+        $notifications = collect($notifications)
+            ->unique(fn (array $notification): string => $notification['type'].'|'.$notification['message'])
+            ->values()
+            ->all();
+    @endphp
+
+    <div id="notification-box" class="pointer-events-none fixed inset-x-0 top-4 z-50 flex flex-col items-center gap-2 px-3"></div>
+
     <!-- Decorative Background Elements -->
     <div class="absolute -top-32 -left-24 w-96 h-96 bg-[rgba(0,88,190,0.05)] rounded-full blur-3xl"></div>
     <div class="absolute -bottom-32 -right-24 w-96 h-96 bg-[rgba(213,224,248,0.2)] rounded-full blur-3xl"></div>
@@ -48,9 +79,6 @@
                             required
                         >
                     </div>
-                    @error('username')
-                        <p class="mt-2 text-xs text-red-600">{{ $message }}</p>
-                    @enderror
                 </div>
 
                 <!-- Password Field -->
@@ -72,22 +100,7 @@
                             <iconify-icon id="passwordToggleIcon" icon="mdi:eye-off" style="font-size: 1.25rem;" inline></iconify-icon>
                         </button>
                     </div>
-                    @error('password')
-                        <p class="mt-2 text-xs text-red-600">{{ $message }}</p>
-                    @enderror
                 </div>
-
-                <!-- Error Message -->
-                @if($errors->any() && !$errors->has('username') && !$errors->has('password'))
-                    <div class="p-4 bg-[rgba(255,218,214,0.4)] border border-[rgba(186,26,26,0.1)] rounded-xl flex gap-3">
-                        <svg class="w-5 h-5 text-[#93000a] shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>
-                        <div class="text-sm text-[#93000a]">
-                            @foreach($errors->all() as $error)
-                                <p>{{ $error }}</p>
-                            @endforeach
-                        </div>
-                    </div>
-                @endif
 
                 <!-- Submit Button -->
                 <button
@@ -103,7 +116,7 @@
             <div class="border-t border-[rgba(194,198,214,0.1)] pt-6">
                 <div class="text-center">
                     <p class="text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Parkirin • © UKK RPL NESKAR 2026
+                        Parkirin - UKK RPL NESKAR 2026
                     </p>
                 </div>
             </div>
@@ -112,6 +125,70 @@
     </div>
 
     <script>
+        (function () {
+            const notificationBox = document.getElementById('notification-box');
+
+            if (!notificationBox) {
+                return;
+            }
+
+            const initialNotifications = @json($notifications);
+
+            const variants = {
+                info: {
+                    classes: 'bg-[#0058be] border-[#1d4ed8] text-white',
+                    icon: '<svg class="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>',
+                },
+                error: {
+                    classes: 'bg-[#dc2626] border-[#ef4444] text-white',
+                    icon: '<svg class="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>',
+                },
+                warning: {
+                    classes: 'bg-[#f59e0b] border-[#fbbf24] text-[#1f2937]',
+                    icon: '<svg class="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>',
+                },
+                success: {
+                    classes: 'bg-[#059669] border-[#10b981] text-white',
+                    icon: '<svg class="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>',
+                },
+            };
+
+            function escapeHtml(text) {
+                return text
+                    .replaceAll('&', '&amp;')
+                    .replaceAll('<', '&lt;')
+                    .replaceAll('>', '&gt;')
+                    .replaceAll('"', '&quot;')
+                    .replaceAll("'", '&#039;');
+            }
+
+            function sendNotification(type, message) {
+                const variant = variants[type] ?? variants.info;
+                const component = document.createElement('div');
+
+                component.className = `pointer-events-auto flex w-full max-w-md items-start gap-3 rounded-xl border px-4 py-3 text-sm font-semibold shadow-[0px_14px_30px_rgba(15,23,42,0.18)] opacity-0 translate-y-2 transition-all duration-300 ${variant.classes}`;
+                component.innerHTML = `${variant.icon}<p class="leading-relaxed">${escapeHtml(message)}</p>`;
+                notificationBox.appendChild(component);
+
+                requestAnimationFrame(() => {
+                    component.classList.remove('opacity-0', 'translate-y-2');
+                });
+
+                setTimeout(() => {
+                    component.classList.add('opacity-0', '-translate-y-2');
+                    component.addEventListener('transitionend', () => component.remove(), { once: true });
+                }, 4500);
+            }
+
+            window.sendNotification = sendNotification;
+
+            initialNotifications.forEach(({ type, message }) => {
+                if (typeof message === 'string' && message.trim() !== '') {
+                    sendNotification(type, message);
+                }
+            });
+        })();
+
         function togglePasswordVisibility() {
             const passwordInput = document.getElementById('password');
             const passwordToggleIcon = document.getElementById('passwordToggleIcon');
@@ -127,3 +204,4 @@
     </script>
 </body>
 </html>
+

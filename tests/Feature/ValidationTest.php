@@ -2,8 +2,6 @@
 
 namespace Tests\Feature;
 
-use App\Models\Kendaraan;
-use App\Models\Tarif;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -34,6 +32,7 @@ class ValidationTest extends TestCase
             'username' => 'newuser',
             'password' => 'password123',
             'role' => 'petugas',
+            'status_aktif' => true,
         ]);
 
         $response->assertSessionHasErrors('nama_lengkap');
@@ -46,6 +45,7 @@ class ValidationTest extends TestCase
             'username' => 'newuser',
             'password' => 'password123',
             'role' => 'petugas',
+            'status_aktif' => true,
         ]);
 
         $response->assertSessionHasErrors('nama_lengkap');
@@ -57,6 +57,7 @@ class ValidationTest extends TestCase
             'nama_lengkap' => 'New User',
             'password' => 'password123',
             'role' => 'petugas',
+            'status_aktif' => true,
         ]);
 
         $response->assertSessionHasErrors('username');
@@ -69,6 +70,7 @@ class ValidationTest extends TestCase
             'username' => 'admin',
             'password' => 'password123',
             'role' => 'petugas',
+            'status_aktif' => true,
         ]);
 
         $response->assertSessionHasErrors('username');
@@ -80,6 +82,7 @@ class ValidationTest extends TestCase
             'nama_lengkap' => 'New User',
             'username' => 'newuser',
             'role' => 'petugas',
+            'status_aktif' => true,
         ]);
 
         $response->assertSessionHasErrors('password');
@@ -92,6 +95,7 @@ class ValidationTest extends TestCase
             'username' => 'newuser',
             'password' => '12345',
             'role' => 'petugas',
+            'status_aktif' => true,
         ]);
 
         $response->assertSessionHasErrors('password');
@@ -103,6 +107,7 @@ class ValidationTest extends TestCase
             'nama_lengkap' => 'New User',
             'username' => 'newuser',
             'password' => 'password123',
+            'status_aktif' => true,
         ]);
 
         $response->assertSessionHasErrors('role');
@@ -115,6 +120,7 @@ class ValidationTest extends TestCase
             'username' => 'newuser',
             'password' => 'password123',
             'role' => 'invalid_role',
+            'status_aktif' => true,
         ]);
 
         $response->assertSessionHasErrors('role');
@@ -226,6 +232,19 @@ class ValidationTest extends TestCase
             'warna' => 'merah',
             'pemilik' => 'Owner',
             'id_user' => 1,
+        ]);
+
+        $response->assertSessionHasErrors('plat_nomor');
+    }
+
+    public function test_kendaraan_plat_nomor_must_follow_indonesian_format(): void
+    {
+        $response = $this->actingAs($this->admin)->post('/admin/kendaraans', [
+            'plat_nomor' => 'INVALID-PLAT',
+            'jenis_kendaraan' => 'motor',
+            'warna' => 'merah',
+            'pemilik' => 'Owner',
+            'id_user' => $this->admin->id_user,
         ]);
 
         $response->assertSessionHasErrors('plat_nomor');

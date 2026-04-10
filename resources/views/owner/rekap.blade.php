@@ -45,6 +45,12 @@
                 >
                     Filter
                 </button>
+                <a
+                    href="{{ route('owner.rekap.download-csv', request()->only(['start_date', 'end_date'])) }}"
+                    class="px-6 py-2.5 bg-[#16a34a] text-white text-sm font-semibold rounded-lg hover:bg-[#15803d] transition-colors"
+                >
+                    Download CSV
+                </a>
                 @if(request('start_date') || request('end_date'))
                     <a
                         href="{{ route('owner.rekap') }}"
@@ -84,11 +90,11 @@
                     @forelse($transaksis as $transaksi)
                         <tr class="hover:bg-[#f9fafb] transition-colors">
                             <td class="px-6 py-4">
-                                <code class="text-sm font-semibold bg-[#f2f4f7] px-2 py-1 rounded text-[#0c4a6e]">{{ $transaksi->kendaraan->plat_nomor }}</code>
+                                <code class="text-sm font-semibold bg-[#f2f4f7] px-2 py-1 rounded text-[#0c4a6e]">{{ $transaksi->kendaraan?->plat_nomor ?? '-' }}</code>
                             </td>
                             <td class="px-6 py-4">
                                 <span class="inline-flex items-center px-3 py-1 text-xs font-semibold rounded-full bg-[#dbeafe] text-[#0c4a6e]">
-                                    {{ $transaksi->areaParkir->nama_area }}
+                                    {{ $transaksi->areaParkir?->nama_area ?? '-' }}
                                 </span>
                             </td>
                             <td class="px-6 py-4">

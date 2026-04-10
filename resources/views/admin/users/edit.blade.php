@@ -24,13 +24,10 @@
                     id="nama_lengkap"
                     name="nama_lengkap"
                     value="{{ old('nama_lengkap', $user->nama_lengkap) }}"
-                    class="w-full px-4 py-2.5 rounded-lg bg-[#f2f4f7] text-[#191c1e] placeholder-[#94a3b8] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#0058be] focus:ring-opacity-30 transition-all @error('nama_lengkap') focus:ring-red-300 @enderror"
+                    class="w-full px-4 py-2.5 rounded-lg bg-[#f2f4f7] text-[#191c1e] placeholder-[#94a3b8] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#0058be] focus:ring-opacity-30 transition-all"
                     placeholder="Masukkan nama lengkap"
                     required
                 >
-                @error('nama_lengkap')
-                    <p class="mt-2 text-xs text-[#dc2626]">{{ $message }}</p>
-                @enderror
             </div>
 
             <!-- Username -->
@@ -41,13 +38,10 @@
                     id="username"
                     name="username"
                     value="{{ old('username', $user->username) }}"
-                    class="w-full px-4 py-2.5 rounded-lg bg-[#f2f4f7] text-[#191c1e] placeholder-[#94a3b8] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#0058be] focus:ring-opacity-30 transition-all @error('username') focus:ring-red-300 @enderror"
+                    class="w-full px-4 py-2.5 rounded-lg bg-[#f2f4f7] text-[#191c1e] placeholder-[#94a3b8] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#0058be] focus:ring-opacity-30 transition-all"
                     placeholder="Masukkan username"
                     required
                 >
-                @error('username')
-                    <p class="mt-2 text-xs text-[#dc2626]">{{ $message }}</p>
-                @enderror
             </div>
 
             <!-- Password (Optional) -->
@@ -57,12 +51,9 @@
                     type="password"
                     id="password"
                     name="password"
-                    class="w-full px-4 py-2.5 rounded-lg bg-[#f2f4f7] text-[#191c1e] placeholder-[#94a3b8] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#0058be] focus:ring-opacity-30 transition-all @error('password') focus:ring-red-300 @enderror"
+                    class="w-full px-4 py-2.5 rounded-lg bg-[#f2f4f7] text-[#191c1e] placeholder-[#94a3b8] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#0058be] focus:ring-opacity-30 transition-all"
                     placeholder="Masukkan password baru (minimal 6 karakter)"
                 >
-                @error('password')
-                    <p class="mt-2 text-xs text-[#dc2626]">{{ $message }}</p>
-                @enderror
             </div>
 
             <!-- Role -->
@@ -71,7 +62,7 @@
                 <select
                     id="role"
                     name="role"
-                    class="w-full px-4 py-2.5 rounded-lg bg-[#f2f4f7] text-[#191c1e] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#0058be] focus:ring-opacity-30 transition-all @error('role') focus:ring-red-300 @enderror"
+                    class="w-full px-4 py-2.5 rounded-lg bg-[#f2f4f7] text-[#191c1e] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#0058be] focus:ring-opacity-30 transition-all"
                     required
                 >
                     <option value="">Pilih Role</option>
@@ -79,9 +70,6 @@
                     <option value="petugas" {{ old('role', $user->role) === 'petugas' ? 'selected' : '' }}>Petugas</option>
                     <option value="owner" {{ old('role', $user->role) === 'owner' ? 'selected' : '' }}>Owner</option>
                 </select>
-                @error('role')
-                    <p class="mt-2 text-xs text-[#dc2626]">{{ $message }}</p>
-                @enderror
             </div>
 
             <!-- Status -->
@@ -90,15 +78,12 @@
                 <select
                     id="status_aktif"
                     name="status_aktif"
-                    class="w-full px-4 py-2.5 rounded-lg bg-[#f2f4f7] text-[#191c1e] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#0058be] focus:ring-opacity-30 transition-all @error('status_aktif') focus:ring-red-300 @enderror"
+                    class="w-full px-4 py-2.5 rounded-lg bg-[#f2f4f7] text-[#191c1e] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#0058be] focus:ring-opacity-30 transition-all"
                     required
                 >
                     <option value="1" {{ old('status_aktif', $user->status_aktif) == 1 ? 'selected' : '' }}>Aktif</option>
                     <option value="0" {{ old('status_aktif', $user->status_aktif) == 0 ? 'selected' : '' }}>Nonaktif</option>
                 </select>
-                @error('status_aktif')
-                    <p class="mt-2 text-xs text-[#dc2626]">{{ $message }}</p>
-                @enderror
             </div>
 
             <!-- Buttons -->
@@ -120,3 +105,4 @@
     </div>
 </div>
 @endsection
+

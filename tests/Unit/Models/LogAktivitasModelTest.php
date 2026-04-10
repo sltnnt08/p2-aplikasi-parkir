@@ -131,4 +131,18 @@ class LogAktivitasModelTest extends TestCase
         $this->assertTrue($logs->pluck('aktivitas')->contains('Create'));
         $this->assertTrue($logs->pluck('aktivitas')->contains('Logout'));
     }
+
+    public function test_activity_label_for_kendaraans_edit_is_human_readable(): void
+    {
+        $label = LogAktivitas::toHumanReadableActivity('GET admin.kendaraans.edit [200]');
+
+        $this->assertSame('Membuka form ubah kendaraan', $label);
+    }
+
+    public function test_activity_label_for_legacy_kendaraan_route_is_human_readable(): void
+    {
+        $label = LogAktivitas::toHumanReadableActivity('GET admin.kendaraan [200]');
+
+        $this->assertSame('Mengakses menu kendaraan', $label);
+    }
 }

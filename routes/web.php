@@ -8,11 +8,11 @@ use Illuminate\Support\Facades\Route;
 
 // Auth routes
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
-Route::post('/login', [AuthController::class, 'login']);
-Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+Route::post('/login', [AuthController::class, 'login'])->middleware('activity');
+Route::post('/logout', [AuthController::class, 'logout'])->middleware(['auth', 'activity'])->name('logout');
 
 // Protected routes
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'activity'])->group(function () {
     // Admin routes
     Route::middleware(['role:admin'])->prefix('admin')->name('admin.')->group(function () {
         Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
@@ -62,6 +62,8 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/transaksi/masuk', [PetugasController::class, 'storeTransaksiMasuk'])->name('transaksi.store.masuk');
         Route::get('/transaksi/keluar', [PetugasController::class, 'transaksiKeluar'])->name('transaksi.keluar');
         Route::post('/transaksi/keluar', [PetugasController::class, 'processTransaksiKeluar'])->name('transaksi.process.keluar');
+        Route::get('/transaksi/keluar/{token}/struk', [PetugasController::class, 'cetakStrukPending'])->name('transaksi.pending.struk');
+        Route::post('/transaksi/keluar/{token}/finalize', [PetugasController::class, 'finalizeTransaksiKeluar'])->name('transaksi.finalize.keluar');
         Route::get('/transaksi/{transaksi}/struk', [PetugasController::class, 'cetakStruk'])->name('transaksi.struk');
     });
 
@@ -69,6 +71,7 @@ Route::middleware(['auth'])->group(function () {
     Route::middleware(['role:owner'])->prefix('owner')->name('owner.')->group(function () {
         Route::get('/dashboard', [OwnerController::class, 'dashboard'])->name('dashboard');
         Route::get('/rekap', [OwnerController::class, 'rekapTransaksi'])->name('rekap');
+        Route::get('/rekap/download-csv', [OwnerController::class, 'downloadRekapCsv'])->name('rekap.download-csv');
     });
 });
 

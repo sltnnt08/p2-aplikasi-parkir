@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.app')
 
 @section('title', 'Tambah Tarif - Admin')
 
@@ -15,13 +15,31 @@
         <form method="POST" action="{{ route('admin.tarifs.store') }}" class="space-y-6">
             @csrf
 
+            <!-- Area Parkir -->
+            <div>
+                <label for="id_area" class="block text-sm font-semibold text-[#191c1e] mb-2">Berlaku di Area</label>
+                <select
+                    id="id_area"
+                    name="id_area"
+                    class="w-full px-4 py-2.5 rounded-lg bg-[#f2f4f7] text-[#191c1e] focus:bg-white focus:outline-none focus:ring-2 focus:ring-opacity-30 transition-all {{ $errors->has('id_area') ? 'focus:ring-red-300' : 'focus:ring-[#0058be]' }}"
+                    required
+                >
+                    <option value="">Pilih Area Parkir</option>
+                    @foreach($areas as $area)
+                        <option value="{{ $area->id_area }}" {{ (string) old('id_area') === (string) $area->id_area ? 'selected' : '' }}>
+                            {{ $area->nama_area }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+
             <!-- Jenis Kendaraan -->
             <div>
                 <label for="jenis_kendaraan" class="block text-sm font-semibold text-[#191c1e] mb-2">Jenis Kendaraan</label>
                 <select
                     id="jenis_kendaraan"
                     name="jenis_kendaraan"
-                    class="w-full px-4 py-2.5 rounded-lg bg-[#f2f4f7] text-[#191c1e] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#0058be] focus:ring-opacity-30 transition-all @error('jenis_kendaraan') focus:ring-red-300 @enderror"
+                    class="w-full px-4 py-2.5 rounded-lg bg-[#f2f4f7] text-[#191c1e] focus:bg-white focus:outline-none focus:ring-2 focus:ring-opacity-30 transition-all {{ $errors->has('jenis_kendaraan') ? 'focus:ring-red-300' : 'focus:ring-[#0058be]' }}"
                     required
                 >
                     <option value="">Pilih Jenis Kendaraan</option>
@@ -29,9 +47,6 @@
                     <option value="mobil" {{ old('jenis_kendaraan') === 'mobil' ? 'selected' : '' }}>Mobil</option>
                     <option value="lainnya" {{ old('jenis_kendaraan') === 'lainnya' ? 'selected' : '' }}>Lainnya</option>
                 </select>
-                @error('jenis_kendaraan')
-                    <p class="mt-2 text-xs text-[#dc2626]">{{ $message }}</p>
-                @enderror
             </div>
 
             <!-- Tarif Per Jam -->
@@ -42,15 +57,12 @@
                     id="tarif_per_jam"
                     name="tarif_per_jam"
                     value="{{ old('tarif_per_jam') }}"
-                    class="w-full px-4 py-2.5 rounded-lg bg-[#f2f4f7] text-[#191c1e] placeholder-[#94a3b8] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#0058be] focus:ring-opacity-30 transition-all @error('tarif_per_jam') focus:ring-red-300 @enderror"
+                    class="w-full px-4 py-2.5 rounded-lg bg-[#f2f4f7] text-[#191c1e] placeholder-[#94a3b8] focus:bg-white focus:outline-none focus:ring-2 focus:ring-opacity-30 transition-all {{ $errors->has('tarif_per_jam') ? 'focus:ring-red-300' : 'focus:ring-[#0058be]' }}"
                     placeholder="Masukkan tarif per jam"
                     min="0"
                     step="1000"
                     required
                 >
-                @error('tarif_per_jam')
-                    <p class="mt-2 text-xs text-[#dc2626]">{{ $message }}</p>
-                @enderror
             </div>
 
             <!-- Buttons -->
@@ -72,3 +84,4 @@
     </div>
 </div>
 @endsection
+

@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'Parkirin')</title>
+    <link rel="icon" type="image/svg+xml" href="/storage/parkirin_logo_transparent.svg">
     @vite('resources/css/app.css')
     <script src="https://code.iconify.design/iconify-icon/1.0.8/iconify-icon.min.js"></script>
 </head>
@@ -11,7 +12,35 @@
     @php
         $currentUser = Auth::user();
         $currentRole = $currentUser?->role;
+        $notifications = [];
+
+        foreach (['success', 'error', 'warning', 'info'] as $type) {
+            $message = session($type);
+
+            if (is_string($message) && $message !== '') {
+                $notifications[] = [
+                    'type' => $type,
+                    'message' => $message,
+                ];
+            }
+        }
+
+        if ($errors->any()) {
+            foreach (array_unique($errors->all()) as $errorMessage) {
+                $notifications[] = [
+                    'type' => 'error',
+                    'message' => $errorMessage,
+                ];
+            }
+        }
+
+        $notifications = collect($notifications)
+            ->unique(fn (array $notification): string => $notification['type'].'|'.$notification['message'])
+            ->values()
+            ->all();
     @endphp
+
+    <div id="notification-box" class="pointer-events-none fixed inset-x-0 top-4 z-50 flex flex-col items-center gap-2 px-3"></div>
 
     <div class="flex min-h-screen">
         <!-- Sidebar Navigation -->
@@ -107,23 +136,11 @@
                 <div class="flex items-center justify-between">
                     <!-- Search Bar -->
                     <div class="flex-1 max-w-md">
-                        <div class="relative">
-                            <input type="text" placeholder="Cari data..." class="w-full px-4 py-2 pl-10 rounded-lg bg-[#e6e8eb] text-sm focus:outline-none focus:ring-2 focus:ring-[#0058be] focus:ring-opacity-30">
-                            <iconify-icon icon="mdi:magnify" class="absolute left-3 top-2.5 text-gray-400" style="font-size: 1.25rem;"></iconify-icon>
-                        </div>
+                        {{-- disini nanti bakal ada search bar, tapi belum di dev --}}
                     </div>
 
                     <!-- Right Section -->
                     <div class="flex items-center gap-4 ml-4">
-                        <button class="p-2 hover:bg-[#f2f4f7] rounded-full transition-colors">
-                            <iconify-icon icon="mdi:bell" class="text-gray-600" style="font-size: 1.5rem;"></iconify-icon>
-                        </button>
-                        <button class="p-2 hover:bg-[#f2f4f7] rounded-full transition-colors">
-                            <iconify-icon icon="mdi:cog" class="text-gray-600" style="font-size: 1.5rem;"></iconify-icon>
-                        </button>
-
-                        <div class="w-px h-8 bg-[rgba(194,198,214,0.3)]"></div>
-
                         <div class="flex items-center gap-2">
                             <div class="w-8 h-8 rounded-lg flex items-center justify-center shrink-0">
                                 <img src="/storage/parkirin_logo_transparent.svg" alt="Parkirin" class="w-full h-full object-contain">
@@ -146,28 +163,77 @@
             <!-- Page Content -->
             <main class="flex-1 overflow-auto">
                 <div class="p-8">
-                    <!-- Alert Messages -->
-                    @if(session('success'))
-                        <div class="mb-6 p-4 bg-emerald-50 border border-emerald-200 rounded-lg text-emerald-700 text-sm">
-                            {{ session('success') }}
-                        </div>
-                    @endif
-
-                    @if($errors->any())
-                        <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
-                            <ul class="space-y-1">
-                                @foreach($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
-                        </div>
-                    @endif
-
                     @yield('content')
                 </div>
             </main>
         </div>
     </div>
+
+    <script>
+        (function () {
+            const notificationBox = document.getElementById('notification-box');
+
+            if (!notificationBox) {
+                return;
+            }
+
+            const initialNotifications = @json($notifications);
+
+            const variants = {
+                info: {
+                    classes: 'bg-[#0058be] border-[#1d4ed8] text-white',
+                    icon: '<svg class="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>',
+                },
+                error: {
+                    classes: 'bg-[#dc2626] border-[#ef4444] text-white',
+                    icon: '<svg class="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>',
+                },
+                warning: {
+                    classes: 'bg-[#f59e0b] border-[#fbbf24] text-[#1f2937]',
+                    icon: '<svg class="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>',
+                },
+                success: {
+                    classes: 'bg-[#059669] border-[#10b981] text-white',
+                    icon: '<svg class="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>',
+                },
+            };
+
+            function escapeHtml(text) {
+                return text
+                    .replaceAll('&', '&amp;')
+                    .replaceAll('<', '&lt;')
+                    .replaceAll('>', '&gt;')
+                    .replaceAll('"', '&quot;')
+                    .replaceAll("'", '&#039;');
+            }
+
+            function sendNotification(type, message) {
+                const variant = variants[type] ?? variants.info;
+                const component = document.createElement('div');
+
+                component.className = `pointer-events-auto flex w-full max-w-md items-start gap-3 rounded-xl border px-4 py-3 text-sm font-semibold shadow-[0px_14px_30px_rgba(15,23,42,0.18)] opacity-0 translate-y-2 transition-all duration-300 ${variant.classes}`;
+                component.innerHTML = `${variant.icon}<p class="leading-relaxed">${escapeHtml(message)}</p>`;
+                notificationBox.appendChild(component);
+
+                requestAnimationFrame(() => {
+                    component.classList.remove('opacity-0', 'translate-y-2');
+                });
+
+                setTimeout(() => {
+                    component.classList.add('opacity-0', '-translate-y-2');
+                    component.addEventListener('transitionend', () => component.remove(), { once: true });
+                }, 4500);
+            }
+
+            window.sendNotification = sendNotification;
+
+            initialNotifications.forEach(({ type, message }) => {
+                if (typeof message === 'string' && message.trim() !== '') {
+                    sendNotification(type, message);
+                }
+            });
+        })();
+    </script>
 
     @vite('resources/js/app.js')
 </body>

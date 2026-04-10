@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\AreaParkir;
 use App\Models\Kendaraan;
 use App\Models\Tarif;
+use App\Models\Transaksi;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -18,6 +19,8 @@ class AdminControllerTest extends TestCase
     protected User $petugas;
 
     protected User $owner;
+
+    protected AreaParkir $tarifArea;
 
     protected function setUp(): void
     {
@@ -45,6 +48,12 @@ class AdminControllerTest extends TestCase
             'password' => bcrypt('password'),
             'role' => 'owner',
             'status_aktif' => true,
+        ]);
+
+        $this->tarifArea = AreaParkir::create([
+            'nama_area' => 'Area Tarif Utama',
+            'kapasitas' => 50,
+            'terisi' => 0,
         ]);
     }
 
@@ -80,11 +89,13 @@ class AdminControllerTest extends TestCase
             'username' => 'newuser',
             'password' => 'password123',
             'role' => 'petugas',
+            'status_aktif' => false,
         ]);
 
         $this->assertDatabaseHas('tb_user', [
             'username' => 'newuser',
             'role' => 'petugas',
+            'status_aktif' => 0,
         ]);
 
         $response->assertRedirect(route('admin.users'));
@@ -97,6 +108,7 @@ class AdminControllerTest extends TestCase
             'username' => 'admin',
             'password' => 'password123',
             'role' => 'petugas',
+            'status_aktif' => true,
         ]);
 
         $response->assertSessionHasErrors('username');
@@ -139,6 +151,33 @@ class AdminControllerTest extends TestCase
         $this->assertFalse($this->petugas->fresh()->status_aktif);
     }
 
+    public function test_admin_cannot_deactivate_own_account_via_update(): void
+    {
+        $response = $this->actingAs($this->admin)->put(
+            "/admin/users/{$this->admin->id_user}",
+            [
+                'nama_lengkap' => 'Admin Updated',
+                'username' => 'admin',
+                'password' => '',
+                'role' => 'admin',
+                'status_aktif' => false,
+            ]
+        );
+
+        $response->assertSessionHasErrors('status_aktif');
+        $this->assertTrue($this->admin->fresh()->status_aktif);
+    }
+
+    public function test_admin_cannot_deactivate_own_account_via_delete(): void
+    {
+        $response = $this->actingAs($this->admin)->delete(
+            "/admin/users/{$this->admin->id_user}"
+        );
+
+        $response->assertSessionHasErrors('user');
+        $this->assertTrue($this->admin->fresh()->status_aktif);
+    }
+
     // Tarif CRUD Tests
     public function test_admin_can_access_tarifs_list_route(): void
     {
@@ -157,6 +196,7 @@ class AdminControllerTest extends TestCase
     public function test_admin_can_create_tarif(): void
     {
         $response = $this->actingAs($this->admin)->post('/admin/tarifs', [
+            'id_area' => $this->tarifArea->id_area,
             'jenis_kendaraan' => 'motor',
             'tarif_per_jam' => 5000,
         ]);
@@ -185,6 +225,7 @@ class AdminControllerTest extends TestCase
     public function test_admin_can_update_tarif(): void
     {
         $tarif = Tarif::create([
+            'id_area' => $this->tarifArea->id_area,
             'jenis_kendaraan' => 'mobil',
             'tarif_per_jam' => 10000,
         ]);
@@ -192,6 +233,7 @@ class AdminControllerTest extends TestCase
         $response = $this->actingAs($this->admin)->put(
             "/admin/tarifs/{$tarif->id_tarif}",
             [
+                'id_area' => $this->tarifArea->id_area,
                 'jenis_kendaraan' => 'mobil',
                 'tarif_per_jam' => 12000,
             ]
@@ -214,6 +256,48 @@ class AdminControllerTest extends TestCase
             ->delete("/admin/tarifs/{$tarif->id_tarif}");
 
         $this->assertDatabaseMissing('tb_tarif', [
+            'id_tarif' => $tarif->id_tarif,
+        ]);
+    }
+
+    public function test_admin_cannot_delete_tarif_that_is_used_in_transaksi(): void
+    {
+        $tarif = Tarif::create([
+            'jenis_kendaraan' => 'motor',
+            'tarif_per_jam' => 5000,
+        ]);
+
+        $area = AreaParkir::create([
+            'nama_area' => 'Area Tarif Dipakai',
+            'kapasitas' => 20,
+            'terisi' => 0,
+        ]);
+
+        $kendaraan = Kendaraan::create([
+            'plat_nomor' => 'B1111CD',
+            'jenis_kendaraan' => 'motor',
+            'warna' => 'hitam',
+            'pemilik' => 'Pengguna Aktif',
+            'id_user' => $this->owner->id_user,
+        ]);
+
+        Transaksi::create([
+            'id_kendaraan' => $kendaraan->id_kendaraan,
+            'waktu_masuk' => now(),
+            'waktu_keluar' => null,
+            'id_tarif' => $tarif->id_tarif,
+            'durasi_jam' => null,
+            'biaya_total' => null,
+            'status' => 'masuk',
+            'id_user' => $this->admin->id_user,
+            'id_area' => $area->id_area,
+        ]);
+
+        $response = $this->actingAs($this->admin)
+            ->delete("/admin/tarifs/{$tarif->id_tarif}");
+
+        $response->assertSessionHasErrors('tarif');
+        $this->assertDatabaseHas('tb_tarif', [
             'id_tarif' => $tarif->id_tarif,
         ]);
     }
@@ -301,6 +385,52 @@ class AdminControllerTest extends TestCase
         ]);
     }
 
+    public function test_admin_can_delete_area_that_is_used_in_transaksi(): void
+    {
+        $area = AreaParkir::create([
+            'nama_area' => 'Area Dipakai Transaksi',
+            'kapasitas' => 30,
+            'terisi' => 1,
+        ]);
+
+        $tarif = Tarif::create([
+            'jenis_kendaraan' => 'motor',
+            'tarif_per_jam' => 5000,
+        ]);
+
+        $kendaraan = Kendaraan::create([
+            'plat_nomor' => 'B1212CD',
+            'jenis_kendaraan' => 'motor',
+            'warna' => 'hitam',
+            'pemilik' => 'Pengguna Aktif',
+            'id_user' => $this->owner->id_user,
+        ]);
+
+        Transaksi::create([
+            'id_kendaraan' => $kendaraan->id_kendaraan,
+            'waktu_masuk' => now(),
+            'waktu_keluar' => null,
+            'id_tarif' => $tarif->id_tarif,
+            'durasi_jam' => null,
+            'biaya_total' => null,
+            'status' => 'masuk',
+            'id_user' => $this->admin->id_user,
+            'id_area' => $area->id_area,
+        ]);
+
+        $response = $this->actingAs($this->admin)
+            ->delete("/admin/areas/{$area->id_area}");
+
+        $response->assertRedirect(route('admin.areas'));
+        $this->assertDatabaseMissing('tb_area_parkir', [
+            'id_area' => $area->id_area,
+        ]);
+        $this->assertDatabaseHas('tb_transaksi', [
+            'id_area' => $area->id_area,
+            'id_kendaraan' => $kendaraan->id_kendaraan,
+        ]);
+    }
+
     // Kendaraan CRUD Tests
     public function test_admin_can_view_kendaraans_list(): void
     {
@@ -312,7 +442,7 @@ class AdminControllerTest extends TestCase
     public function test_admin_can_create_kendaraan(): void
     {
         $response = $this->actingAs($this->admin)->post('/admin/kendaraans', [
-            'plat_nomor' => 'B9999AB',
+            'plat_nomor' => 'b 9999 ab',
             'jenis_kendaraan' => 'motor',
             'warna' => 'hitam',
             'pemilik' => 'Pemilik Baru',
@@ -385,6 +515,95 @@ class AdminControllerTest extends TestCase
 
         $this->assertDatabaseMissing('tb_kendaraan', [
             'id_kendaraan' => $kendaraan->id_kendaraan,
+        ]);
+    }
+
+    public function test_admin_cannot_delete_kendaraan_that_is_currently_parked(): void
+    {
+        $area = AreaParkir::create([
+            'nama_area' => 'Area Kendaraan Dipakai',
+            'kapasitas' => 20,
+            'terisi' => 1,
+        ]);
+
+        $tarif = Tarif::create([
+            'jenis_kendaraan' => 'mobil',
+            'tarif_per_jam' => 8000,
+        ]);
+
+        $kendaraan = Kendaraan::create([
+            'plat_nomor' => 'B9898EF',
+            'jenis_kendaraan' => 'mobil',
+            'warna' => 'putih',
+            'pemilik' => 'Pemilik Aktif',
+            'id_user' => $this->owner->id_user,
+        ]);
+
+        Transaksi::create([
+            'id_kendaraan' => $kendaraan->id_kendaraan,
+            'waktu_masuk' => now(),
+            'waktu_keluar' => null,
+            'id_tarif' => $tarif->id_tarif,
+            'durasi_jam' => null,
+            'biaya_total' => null,
+            'status' => 'masuk',
+            'id_user' => $this->admin->id_user,
+            'id_area' => $area->id_area,
+        ]);
+
+        $response = $this->actingAs($this->admin)
+            ->delete("/admin/kendaraans/{$kendaraan->id_kendaraan}");
+
+        $response->assertRedirect(route('admin.kendaraans'));
+        $response->assertSessionHasErrors('kendaraan');
+        $this->assertDatabaseHas('tb_kendaraan', [
+            'id_kendaraan' => $kendaraan->id_kendaraan,
+        ]);
+    }
+
+    public function test_admin_can_delete_kendaraan_that_has_parkir_history_but_not_active(): void
+    {
+        $area = AreaParkir::create([
+            'nama_area' => 'Area Riwayat Kendaraan',
+            'kapasitas' => 20,
+            'terisi' => 0,
+        ]);
+
+        $tarif = Tarif::create([
+            'jenis_kendaraan' => 'mobil',
+            'tarif_per_jam' => 8000,
+        ]);
+
+        $kendaraan = Kendaraan::create([
+            'plat_nomor' => 'B4545XY',
+            'jenis_kendaraan' => 'mobil',
+            'warna' => 'putih',
+            'pemilik' => 'Pemilik Riwayat',
+            'id_user' => $this->owner->id_user,
+        ]);
+
+        Transaksi::create([
+            'id_kendaraan' => $kendaraan->id_kendaraan,
+            'waktu_masuk' => now()->subHours(2),
+            'waktu_keluar' => now()->subHour(),
+            'id_tarif' => $tarif->id_tarif,
+            'durasi_jam' => 1,
+            'biaya_total' => 8000,
+            'status' => 'keluar',
+            'id_user' => $this->admin->id_user,
+            'id_area' => $area->id_area,
+        ]);
+
+        $response = $this->actingAs($this->admin)
+            ->delete("/admin/kendaraans/{$kendaraan->id_kendaraan}");
+
+        $response->assertRedirect(route('admin.kendaraans'));
+        $this->assertDatabaseMissing('tb_kendaraan', [
+            'id_kendaraan' => $kendaraan->id_kendaraan,
+        ]);
+        $this->assertDatabaseHas('tb_transaksi', [
+            'id_kendaraan' => $kendaraan->id_kendaraan,
+            'id_area' => $area->id_area,
         ]);
     }
 }

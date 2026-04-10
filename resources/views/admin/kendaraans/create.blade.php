@@ -23,13 +23,10 @@
                     id="plat_nomor"
                     name="plat_nomor"
                     value="{{ old('plat_nomor') }}"
-                    class="w-full px-4 py-2.5 rounded-lg bg-[#f2f4f7] text-[#191c1e] placeholder-[#94a3b8] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#0058be] focus:ring-opacity-30 transition-all @error('plat_nomor') focus:ring-red-300 @enderror"
+                    class="w-full px-4 py-2.5 rounded-lg bg-[#f2f4f7] text-[#191c1e] placeholder-[#94a3b8] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#0058be] focus:ring-opacity-30 transition-all"
                     placeholder="Contoh: B 1234 ABC"
                     required
                 >
-                @error('plat_nomor')
-                    <p class="mt-2 text-xs text-[#dc2626]">{{ $message }}</p>
-                @enderror
             </div>
 
             <!-- Jenis Kendaraan -->
@@ -40,13 +37,10 @@
                     id="jenis_kendaraan"
                     name="jenis_kendaraan"
                     value="{{ old('jenis_kendaraan') }}"
-                    class="w-full px-4 py-2.5 rounded-lg bg-[#f2f4f7] text-[#191c1e] placeholder-[#94a3b8] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#0058be] focus:ring-opacity-30 transition-all @error('jenis_kendaraan') focus:ring-red-300 @enderror"
+                    class="w-full px-4 py-2.5 rounded-lg bg-[#f2f4f7] text-[#191c1e] placeholder-[#94a3b8] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#0058be] focus:ring-opacity-30 transition-all"
                     placeholder="Contoh: Honda Civic"
                     required
                 >
-                @error('jenis_kendaraan')
-                    <p class="mt-2 text-xs text-[#dc2626]">{{ $message }}</p>
-                @enderror
             </div>
 
             <!-- Warna -->
@@ -57,13 +51,10 @@
                     id="warna"
                     name="warna"
                     value="{{ old('warna') }}"
-                    class="w-full px-4 py-2.5 rounded-lg bg-[#f2f4f7] text-[#191c1e] placeholder-[#94a3b8] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#0058be] focus:ring-opacity-30 transition-all @error('warna') focus:ring-red-300 @enderror"
+                    class="w-full px-4 py-2.5 rounded-lg bg-[#f2f4f7] text-[#191c1e] placeholder-[#94a3b8] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#0058be] focus:ring-opacity-30 transition-all"
                     placeholder="Contoh: Merah, Putih, Hitam"
                     required
                 >
-                @error('warna')
-                    <p class="mt-2 text-xs text-[#dc2626]">{{ $message }}</p>
-                @enderror
             </div>
 
             <!-- Pemilik -->
@@ -74,13 +65,10 @@
                     id="pemilik"
                     name="pemilik"
                     value="{{ old('pemilik') }}"
-                    class="w-full px-4 py-2.5 rounded-lg bg-[#f2f4f7] text-[#191c1e] placeholder-[#94a3b8] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#0058be] focus:ring-opacity-30 transition-all @error('pemilik') focus:ring-red-300 @enderror"
+                    class="w-full px-4 py-2.5 rounded-lg bg-[#f2f4f7] text-[#191c1e] placeholder-[#94a3b8] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#0058be] focus:ring-opacity-30 transition-all"
                     placeholder="Masukkan nama pemilik kendaraan"
                     required
                 >
-                @error('pemilik')
-                    <p class="mt-2 text-xs text-[#dc2626]">{{ $message }}</p>
-                @enderror
             </div>
 
             <!-- Pengguna -->
@@ -89,7 +77,7 @@
                 <select
                     id="id_user"
                     name="id_user"
-                    class="w-full px-4 py-2.5 rounded-lg bg-[#f2f4f7] text-[#191c1e] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#0058be] focus:ring-opacity-30 transition-all @error('id_user') focus:ring-red-300 @enderror"
+                    class="w-full px-4 py-2.5 rounded-lg bg-[#f2f4f7] text-[#191c1e] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#0058be] focus:ring-opacity-30 transition-all"
                     required
                 >
                     <option value="">Pilih Pengguna</option>
@@ -99,9 +87,6 @@
                         </option>
                     @endforeach
                 </select>
-                @error('id_user')
-                    <p class="mt-2 text-xs text-[#dc2626]">{{ $message }}</p>
-                @enderror
             </div>
 
             <!-- Buttons -->
@@ -123,3 +108,4 @@
     </div>
 </div>
 @endsection
+

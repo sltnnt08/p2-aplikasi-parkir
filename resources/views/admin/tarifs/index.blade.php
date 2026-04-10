@@ -15,20 +15,13 @@
         </a>
     </div>
 
-    <!-- Success Message -->
-    @if(session('success'))
-        <div class="p-4 bg-[#ecfdf5] border border-[#d1fae5] rounded-lg flex items-center gap-3">
-            <svg class="w-5 h-5 text-[#059669] shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
-            <p class="text-sm font-medium text-[#065f46]">{{ session('success') }}</p>
-        </div>
-    @endif
-
     <!-- Tarifs Table -->
     <div class="bg-white rounded-lg shadow-[0px_12px_32px_rgba(30,41,59,0.06)]">
         <div class="overflow-x-auto">
             <table class="w-full">
                 <thead class="bg-[#f2f4f7] border-b border-[rgba(194,198,214,0.15)]">
                     <tr>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-[#64748b] uppercase tracking-wider">Area</th>
                         <th class="px-6 py-4 text-left text-xs font-semibold text-[#64748b] uppercase tracking-wider">Jenis Kendaraan</th>
                         <th class="px-6 py-4 text-left text-xs font-semibold text-[#64748b] uppercase tracking-wider">Tarif Per Jam</th>
                         <th class="px-6 py-4 text-left text-xs font-semibold text-[#64748b] uppercase tracking-wider">Aksi</th>
@@ -37,6 +30,9 @@
                 <tbody class="divide-y divide-[rgba(194,198,214,0.1)]">
                     @forelse($tarifs as $tarif)
                         <tr class="hover:bg-[#f9fafb] transition-colors">
+                            <td class="px-6 py-4">
+                                <p class="text-sm text-[#191c1e]">{{ $tarif->areaParkir->nama_area ?? '-' }}</p>
+                            </td>
                             <td class="px-6 py-4">
                                 <span class="inline-flex items-center px-3 py-1 text-xs font-semibold rounded-full bg-[#dbeafe] text-[#0c4a6e]">
                                     {{ ucfirst($tarif->jenis_kendaraan) }}
@@ -62,7 +58,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="3" class="px-6 py-8 text-center">
+                            <td colspan="4" class="px-6 py-8 text-center">
                                 <p class="text-[#64748b]">Belum ada data tarif. Tambahkan tarif untuk setiap jenis kendaraan.</p>
                             </td>
                         </tr>
