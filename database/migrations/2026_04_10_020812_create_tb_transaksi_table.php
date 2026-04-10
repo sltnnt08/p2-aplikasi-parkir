@@ -17,7 +17,7 @@ return new class extends Migration
             $table->datetime('waktu_masuk');
             $table->datetime('waktu_keluar')->nullable();
             $table->foreignId('id_tarif')->constrained('tb_tarif', 'id_tarif');
-            $table->integer('durasi_jam', 5)->nullable();
+            $table->integer('durasi_jam')->nullable();
             $table->decimal('biaya_total', 10, 0)->nullable();
             $table->enum('status', ['masuk', 'keluar']);
             $table->foreignId('id_user')->constrained('tb_user', 'id_user');
