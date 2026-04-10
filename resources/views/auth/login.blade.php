@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Urban Mobility Suite</title>
+    <title>Login - Parkirin</title>
     @vite('resources/css/app.css')
+    <script src="https://code.iconify.design/iconify-icon/1.0.8/iconify-icon.min.js"></script>
 </head>
 <body class="min-h-screen flex items-center justify-center px-6 py-8 relative overflow-hidden" style="background: linear-gradient(90deg, rgb(247, 249, 252) 0%, rgb(247, 249, 252) 100%)">
     <!-- Decorative Background Elements -->
@@ -14,10 +15,10 @@
     <div class="relative z-10 w-full max-w-md">
         <!-- Brand Header -->
         <div class="text-center mb-12">
-            <div class="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-[#0058be] to-[#2170e4] text-white font-bold text-lg mb-4 shadow-[0px_10px_15px_-3px_rgba(0,88,190,0.2)]">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+            <div class="inline-flex items-center justify-center w-12 h-12 rounded-xl shadow-[0px_10px_15px_-3px_rgba(0,88,190,0.2)] mb-4">
+                <img src="/storage/parkirin_logo_transparent.svg" alt="Parkirin" class="w-full h-full object-contain">
             </div>
-            <h1 class="text-2xl font-black text-gray-900 tracking-tight">Urban Mobility Suite</h1>
+            <h1 class="text-2xl font-black text-gray-900 tracking-tight">Parkirin</h1>
         </div>
 
         <!-- Login Card -->
@@ -36,13 +37,13 @@
                 <div>
                     <label for="username" class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">Username</label>
                     <div class="relative">
-                        <svg class="absolute left-4 top-3.5 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 01-5 0V12m0 0v-1.5a2.5 2.5 0 015 0v1.5m0 0v1.5a2.5 2.5 0 01-5 0v-1.5"></path></svg>
+                        <iconify-icon icon="mdi:account" class="absolute left-4 top-3.5 w-5 h-5 text-gray-400" style="font-size: 1.25rem;" inline></iconify-icon>
                         <input
                             type="text"
                             id="username"
                             name="username"
                             value="{{ old('username') }}"
-                            placeholder="Contoh: admin_urban"
+                            placeholder="Username"
                             class="w-full pl-12 pr-4 py-3 rounded-xl bg-[#e6e8eb] border-0 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#0058be] transition-all"
                             required
                         >
@@ -56,20 +57,19 @@
                 <div>
                     <div class="flex items-center justify-between mb-2">
                         <label for="password" class="block text-xs font-bold text-gray-700 uppercase tracking-wider">Password</label>
-                        <a href="#" class="text-xs font-bold text-[#0058be] hover:text-[#0052a3] transition-colors">Lupa Password?</a>
                     </div>
                     <div class="relative">
-                        <svg class="absolute left-4 top-3.5 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                        <iconify-icon icon="mdi:lock" class="absolute left-4 top-3.5 text-gray-400" style="font-size: 1.25rem;" inline></iconify-icon>
                         <input
                             type="password"
                             id="password"
                             name="password"
-                            placeholder="••••••••"
+                            placeholder="Password"
                             class="w-full pl-12 pr-12 py-3 rounded-xl bg-[#e6e8eb] border-0 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#0058be] transition-all"
                             required
                         >
-                        <button type="button" class="absolute right-4 top-3.5 text-gray-400 hover:text-gray-600 transition-colors">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-4.803m5.596-3.856a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0z"></path></svg>
+                        <button type="button" class="absolute right-4 top-3.5 text-gray-400 hover:text-gray-600 transition-colors" onclick="togglePasswordVisibility()">
+                            <iconify-icon id="passwordToggleIcon" icon="mdi:eye-off" style="font-size: 1.25rem;" inline></iconify-icon>
                         </button>
                     </div>
                     @error('password')
@@ -95,7 +95,7 @@
                     class="w-full py-3.5 bg-gradient-to-r from-[#0058be] to-[#2170e4] text-white font-bold rounded-xl hover:shadow-[0px_10px_15px_-3px_rgba(0,88,190,0.2)] transition-all transform hover:scale-105 active:scale-95 flex items-center justify-center gap-2 shadow-[0px_10px_15px_-3px_rgba(0,88,190,0.2)]"
                 >
                     <span>Masuk</span>
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
+                    <iconify-icon icon="mdi:arrow-right" style="font-size: 1.25rem;" inline></iconify-icon>
                 </button>
             </form>
 
@@ -103,27 +103,12 @@
             <div class="border-t border-[rgba(194,198,214,0.1)] pt-6">
                 <div class="text-center">
                     <p class="text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Urban Mobility Suite v4.2.0 • © 2024 Systems Inc
+                        Parkirin • © UKK RPL NESKAR 2026
                     </p>
                 </div>
             </div>
         </div>
 
-        <!-- System Status -->
-        <div class="mt-8 flex items-center justify-center gap-8 text-xs font-bold uppercase tracking-wider opacity-60">
-            <div class="flex items-center gap-2">
-                <div class="w-2 h-2 rounded-full bg-emerald-500"></div>
-                <span class="text-gray-700">Server Aktif</span>
-            </div>
-            <div class="flex items-center gap-2">
-                <div class="w-2 h-2 rounded-full bg-emerald-500"></div>
-                <span class="text-gray-700">Database Aman</span>
-            </div>
-            <div class="flex items-center gap-2">
-                <div class="w-2 h-2 rounded-full bg-emerald-500"></div>
-                <span class="text-gray-700">Sesi Terenkripsi</span>
-            </div>
-        </div>
     </div>
 </body>
 </html>

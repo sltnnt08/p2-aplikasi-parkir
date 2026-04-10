@@ -8,7 +8,7 @@
     <div class="flex items-end justify-between">
         <div>
             <h1 class="text-4xl font-black text-gray-900 mb-2">Dashboard Admin</h1>
-            <p class="text-gray-600">Selamat datang kembali. Kelola sistem manajemen parkir Urban Mobility dari sini.</p>
+            <p class="text-gray-600">Selamat datang kembali. Kelola sistem manajemen parkir Parkirin dari sini.</p>
         </div>
         <a href="{{ route('admin.users') }}" class="px-6 py-3 bg-gradient-to-r from-[#0058be] to-[#2170e4] text-white font-bold rounded-xl hover:shadow-lg transition-all transform hover:scale-105 active:scale-95">
             + Tambah Data
