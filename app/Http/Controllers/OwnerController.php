@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AreaParkir;
 use App\Models\Transaksi;
 use Illuminate\Http\Request;
 
@@ -13,12 +14,25 @@ class OwnerController extends Controller
             ->whereDate('waktu_keluar', today())
             ->sum('biaya_total');
 
+        $todayTransactions = Transaksi::where('status', 'keluar')
+            ->whereDate('waktu_keluar', today())
+            ->count();
+
         $monthIncome = Transaksi::where('status', 'keluar')
             ->whereMonth('waktu_keluar', now()->month)
             ->whereYear('waktu_keluar', now()->year)
             ->sum('biaya_total');
 
-        return view('owner.dashboard', compact('todayIncome', 'monthIncome'));
+        $monthTransactions = Transaksi::where('status', 'keluar')
+            ->whereMonth('waktu_keluar', now()->month)
+            ->whereYear('waktu_keluar', now()->year)
+            ->count();
+
+        $totalCapacity = AreaParkir::sum('kapasitas');
+        $totalFilled = AreaParkir::sum('terisi');
+        $occupancyRate = $totalCapacity > 0 ? (int) round(($totalFilled / $totalCapacity) * 100) : 0;
+
+        return view('owner.dashboard', compact('todayIncome', 'todayTransactions', 'monthIncome', 'monthTransactions', 'occupancyRate'));
     }
 
     public function rekapTransaksi(Request $request)
@@ -34,10 +48,11 @@ class OwnerController extends Controller
             $query->whereDate('waktu_keluar', '<=', $request->end_date);
         }
 
-        $transaksis = $query->orderBy('waktu_keluar', 'desc')->get();
+        $totalIncome = (clone $query)->sum('biaya_total');
+        $totalTransactions = (clone $query)->count();
 
-        $totalIncome = $transaksis->sum('biaya_total');
+        $transaksis = $query->orderBy('waktu_keluar', 'desc')->paginate(20)->withQueryString();
 
-        return view('owner.rekap', compact('transaksis', 'totalIncome'));
+        return view('owner.rekap', compact('transaksis', 'totalIncome', 'totalTransactions'));
     }
 }

@@ -26,7 +26,7 @@
             <div class="flex gap-2">
                 <button
                     type="submit"
-                    class="px-6 py-2.5 bg-gradient-to-r from-[#0058be] to-[#3B82F6] text-white text-sm font-semibold rounded-lg hover:shadow-[0px_12px_32px_rgba(0,88,190,0.15)] active:scale-95 transition-all duration-200"
+                    class="px-6 py-2.5 bg-linear-to-r from-[#0058be] to-[#3B82F6] text-white text-sm font-semibold rounded-lg hover:shadow-[0px_12px_32px_rgba(0,88,190,0.15)] active:scale-95 transition-all duration-200"
                 >
                     Filter
                 </button>
@@ -85,13 +85,19 @@
                     @empty
                         <tr>
                             <td colspan="4" class="px-6 py-8 text-center">
-                                <p class="text-[#64748b]">Belum ada data log</p>
+                                <p class="text-[#64748b]">Belum ada data log pada periode ini. Coba ubah filter tanggal.</p>
                             </td>
                         </tr>
                     @endforelse
                 </tbody>
             </table>
         </div>
+
+        @if($logs->hasPages())
+            <div class="px-6 py-4 border-t border-[rgba(194,198,214,0.1)]">
+                {{ $logs->links() }}
+            </div>
+        @endif
     </div>
 </div>
 @endsection

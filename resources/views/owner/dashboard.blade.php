@@ -42,10 +42,7 @@
             </div>
             <div class="space-y-3">
                 <p class="text-4xl font-black text-gray-900">Rp {{ number_format($monthIncome ?? 0, 0, ',', '.') }}</p>
-                <div class="flex items-center gap-2">
-                    <span class="px-2 py-1 bg-emerald-50 text-emerald-700 text-xs font-bold rounded">+18%</span>
-                    <span class="text-xs text-gray-500">vs bulan sebelumnya</span>
-                </div>
+                <p class="text-xs text-gray-500">Akumulasi bulan berjalan</p>
             </div>
         </div>
     </div>
@@ -88,7 +85,7 @@
                     <svg class="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                 </div>
             </div>
-            <p class="text-3xl font-black text-gray-900">78%</p>
+            <p class="text-3xl font-black text-gray-900">{{ $occupancyRate ?? 0 }}%</p>
         </div>
     </div>
 
@@ -112,9 +109,9 @@
     </div>
 
     <!-- Quick Stats Info -->
-    <div class="bg-gradient-to-r from-[#0058be]/5 to-[#2170e4]/5 border border-[#0058be]/20 rounded-2xl p-6">
+    <div class="border border-[#0058be]/20 rounded-2xl p-6">
         <div class="flex items-start gap-4">
-            <svg class="w-6 h-6 text-[#0058be] flex-shrink-0 mt-1" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 5v8a2 2 0 01-2 2h-5l-5 4v-4H4a2 2 0 01-2-2V5a2 2 0 012-2h12a2 2 0 012 2zm-11-1a1 1 0 11-2 0 1 1 0 012 0zm3 0a1 1 0 11-2 0 1 1 0 012 0zm3 0a1 1 0 11-2 0 1 1 0 012 0z" clip-rule="evenodd"></path></svg>
+            <svg class="w-6 h-6 text-[#0058be] shrink-0 mt-1" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 5v8a2 2 0 01-2 2h-5l-5 4v-4H4a2 2 0 01-2-2V5a2 2 0 012-2h12a2 2 0 012 2zm-11-1a1 1 0 11-2 0 1 1 0 012 0zm3 0a1 1 0 11-2 0 1 1 0 012 0zm3 0a1 1 0 11-2 0 1 1 0 012 0z" clip-rule="evenodd"></path></svg>
             <div>
                 <h3 class="font-semibold text-gray-900 mb-1">Data Real-time</h3>
                 <p class="text-sm text-gray-600">

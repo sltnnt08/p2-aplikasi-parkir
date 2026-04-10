@@ -15,16 +15,19 @@ class AdminController extends Controller
     public function dashboard()
     {
         $totalUsers = User::where('status_aktif', true)->count();
+        $totalPetugas = User::where('status_aktif', true)->where('role', 'petugas')->count();
+        $totalOwner = User::where('status_aktif', true)->where('role', 'owner')->count();
         $totalTarifs = Tarif::count();
         $totalAreas = AreaParkir::count();
 
-        return view('admin.dashboard', compact('totalUsers', 'totalTarifs', 'totalAreas'));
+        return view('admin.dashboard', compact('totalUsers', 'totalPetugas', 'totalOwner', 'totalTarifs', 'totalAreas'));
     }
 
     // CRUD User
     public function users()
     {
-        $users = User::all();
+        $users = User::orderBy('nama_lengkap')->paginate(10);
+
         return view('admin.users.index', compact('users'));
     }
 
@@ -62,7 +65,7 @@ class AdminController extends Controller
     {
         $request->validate([
             'nama_lengkap' => 'required|string|max:50',
-            'username' => 'required|string|max:50|unique:tb_user,username,' . $user->id_user . ',id_user',
+            'username' => 'required|string|max:50|unique:tb_user,username,'.$user->id_user.',id_user',
             'password' => 'nullable|string|min:6',
             'role' => 'required|in:admin,petugas,owner',
             'status_aktif' => 'required|boolean',
@@ -82,13 +85,15 @@ class AdminController extends Controller
     public function deleteUser(User $user)
     {
         $user->update(['status_aktif' => false]);
+
         return redirect()->route('admin.users')->with('success', 'User berhasil dinonaktifkan.');
     }
 
     // CRUD Tarif
     public function tarifs()
     {
-        $tarifs = Tarif::all();
+        $tarifs = Tarif::orderBy('jenis_kendaraan')->paginate(10);
+
         return view('admin.tarifs.index', compact('tarifs'));
     }
 
@@ -129,13 +134,15 @@ class AdminController extends Controller
     public function deleteTarif(Tarif $tarif)
     {
         $tarif->delete();
+
         return redirect()->route('admin.tarifs')->with('success', 'Tarif berhasil dihapus.');
     }
 
     // CRUD Area Parkir
     public function areas()
     {
-        $areas = AreaParkir::all();
+        $areas = AreaParkir::orderBy('nama_area')->paginate(9);
+
         return view('admin.areas.index', compact('areas'));
     }
 
@@ -180,19 +187,22 @@ class AdminController extends Controller
     public function deleteArea(AreaParkir $area)
     {
         $area->delete();
+
         return redirect()->route('admin.areas')->with('success', 'Area parkir berhasil dihapus.');
     }
 
     // CRUD Kendaraan
     public function kendaraans()
     {
-        $kendaraans = Kendaraan::with('user')->get();
+        $kendaraans = Kendaraan::with('user')->orderBy('plat_nomor')->paginate(10);
+
         return view('admin.kendaraans.index', compact('kendaraans'));
     }
 
     public function createKendaraan()
     {
         $users = User::where('status_aktif', true)->get();
+
         return view('admin.kendaraans.create', compact('users'));
     }
 
@@ -214,13 +224,14 @@ class AdminController extends Controller
     public function editKendaraan(Kendaraan $kendaraan)
     {
         $users = User::where('status_aktif', true)->get();
+
         return view('admin.kendaraans.edit', compact('kendaraan', 'users'));
     }
 
     public function updateKendaraan(Request $request, Kendaraan $kendaraan)
     {
         $request->validate([
-            'plat_nomor' => 'required|string|max:15|unique:tb_kendaraan,plat_nomor,' . $kendaraan->id_kendaraan . ',id_kendaraan',
+            'plat_nomor' => 'required|string|max:15|unique:tb_kendaraan,plat_nomor,'.$kendaraan->id_kendaraan.',id_kendaraan',
             'jenis_kendaraan' => 'required|string|max:20',
             'warna' => 'required|string|max:20',
             'pemilik' => 'required|string|max:100',
@@ -235,6 +246,7 @@ class AdminController extends Controller
     public function deleteKendaraan(Kendaraan $kendaraan)
     {
         $kendaraan->delete();
+
         return redirect()->route('admin.kendaraans')->with('success', 'Kendaraan berhasil dihapus.');
     }
 
@@ -247,7 +259,7 @@ class AdminController extends Controller
             $query->whereDate('waktu_aktivitas', $request->tanggal);
         }
 
-        $logs = $query->orderBy('waktu_aktivitas', 'desc')->get();
+        $logs = $query->orderBy('waktu_aktivitas', 'desc')->paginate(20)->withQueryString();
 
         return view('admin.logs.index', compact('logs'));
     }

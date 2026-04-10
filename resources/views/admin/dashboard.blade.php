@@ -10,7 +10,7 @@
             <h1 class="text-4xl font-black text-gray-900 mb-2">Dashboard Admin</h1>
             <p class="text-gray-600">Selamat datang kembali. Kelola sistem manajemen parkir Parkirin dari sini.</p>
         </div>
-        <a href="{{ route('admin.users') }}" class="px-6 py-3 bg-gradient-to-r from-[#0058be] to-[#2170e4] text-white font-bold rounded-xl hover:shadow-lg transition-all transform hover:scale-105 active:scale-95">
+        <a href="{{ route('admin.users') }}" class="px-6 py-3 bg-linear-to-r from-[#0058be] to-[#2170e4] text-white font-bold rounded-xl hover:shadow-lg transition-all transform hover:scale-105 active:scale-95">
             + Tambah Data
         </a>
     </div>
@@ -29,10 +29,7 @@
             </div>
             <div class="space-y-3">
                 <p class="text-5xl font-black text-gray-900">{{ $totalUsers ?? 0 }}</p>
-                <div class="flex items-center gap-2">
-                    <span class="px-2 py-1 bg-emerald-50 text-emerald-700 text-xs font-bold rounded">+12%</span>
-                    <span class="text-xs text-gray-500">vs bulan lalu</span>
-                </div>
+                <p class="text-xs text-gray-500">Pengguna aktif sistem</p>
             </div>
         </div>
 
@@ -49,7 +46,7 @@
             <div class="space-y-3">
                 <p class="text-5xl font-black text-gray-900">{{ $totalPetugas ?? 0 }}</p>
                 <div>
-                    <p class="text-xs text-gray-500">Aktif di 12 area</p>
+                    <p class="text-xs text-gray-500">Petugas aktif terdaftar</p>
                 </div>
             </div>
         </div>
@@ -67,7 +64,7 @@
             <div class="space-y-3">
                 <p class="text-5xl font-black text-gray-900">{{ $totalOwner ?? 0 }}</p>
                 <div>
-                    <p class="text-xs text-gray-500">Entitas Pengelola</p>
+                    <p class="text-xs text-gray-500">Akun owner aktif</p>
                 </div>
             </div>
         </div>

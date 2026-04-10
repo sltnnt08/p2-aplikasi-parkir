@@ -59,7 +59,7 @@
             </div>
 
             <!-- Total Amount -->
-            <div class="bg-gradient-to-r from-[#0058be] to-[#3B82F6] rounded-lg p-6 text-white mb-6">
+            <div class="bg-linear-to-r from-[#0058be] to-[#3B82F6] rounded-lg p-6 text-white mb-6">
                 <p class="text-xs uppercase tracking-wider font-semibold mb-2 opacity-90">Total Biaya</p>
                 <p class="text-4xl font-bold">Rp {{ number_format($transaksi->biaya_total, 0, ',', '.') }}</p>
             </div>
@@ -82,7 +82,7 @@
             </button>
             <a
                 href="{{ route('petugas.dashboard') }}"
-                class="flex-1 py-2.5 px-6 bg-gradient-to-r from-[#0058be] to-[#3B82F6] text-white text-sm font-semibold rounded-lg hover:shadow-[0px_12px_32px_rgba(0,88,190,0.15)] transition-all text-center"
+                class="flex-1 py-2.5 px-6 bg-linear-to-r from-[#0058be] to-[#3B82F6] text-white text-sm font-semibold rounded-lg hover:shadow-[0px_12px_32px_rgba(0,88,190,0.15)] transition-all text-center"
             >
                 Selesai
             </a>

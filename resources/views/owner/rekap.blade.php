@@ -41,7 +41,7 @@
             <div class="flex gap-2">
                 <button
                     type="submit"
-                    class="px-6 py-2.5 bg-gradient-to-r from-[#0058be] to-[#3B82F6] text-white text-sm font-semibold rounded-lg hover:shadow-[0px_12px_32px_rgba(0,88,190,0.15)] active:scale-95 transition-all duration-200"
+                    class="px-6 py-2.5 bg-linear-to-r from-[#0058be] to-[#3B82F6] text-white text-sm font-semibold rounded-lg hover:shadow-[0px_12px_32px_rgba(0,88,190,0.15)] active:scale-95 transition-all duration-200"
                 >
                     Filter
                 </button>
@@ -58,11 +58,11 @@
     </div>
 
     <!-- Summary Card -->
-    @if($transaksis->count() > 0)
-        <div class="bg-gradient-to-r from-[#0058be] to-[#3B82F6] rounded-lg shadow-[0px_12px_32px_rgba(30,41,59,0.06)] p-6 text-white">
+    @if($totalTransactions > 0)
+        <div class="bg-linear-to-r from-[#0058be] to-[#3B82F6] rounded-lg shadow-[0px_12px_32px_rgba(30,41,59,0.06)] p-6 text-white">
             <p class="text-sm text-[rgba(255,255,255,0.8)] uppercase tracking-wider font-semibold">Total Pendapatan</p>
             <p class="text-4xl font-bold mt-2">Rp {{ number_format($totalIncome, 0, ',', '.') }}</p>
-            <p class="text-xs text-[rgba(255,255,255,0.7)] mt-3">Dari {{ $transaksis->count() }} transaksi</p>
+            <p class="text-xs text-[rgba(255,255,255,0.7)] mt-3">Dari {{ $totalTransactions }} transaksi</p>
         </div>
     @endif
 
@@ -107,13 +107,19 @@
                     @empty
                         <tr>
                             <td colspan="6" class="px-6 py-8 text-center">
-                                <p class="text-[#64748b]">Belum ada data transaksi</p>
+                                <p class="text-[#64748b]">Tidak ada transaksi keluar pada rentang tanggal ini.</p>
                             </td>
                         </tr>
                     @endforelse
                 </tbody>
             </table>
         </div>
+
+        @if($transaksis->hasPages())
+            <div class="px-6 py-4 border-t border-[rgba(194,198,214,0.1)]">
+                {{ $transaksis->links() }}
+            </div>
+        @endif
     </div>
 </div>
 @endsection

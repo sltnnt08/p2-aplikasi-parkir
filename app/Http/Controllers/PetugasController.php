@@ -9,6 +9,7 @@ use App\Models\Transaksi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 
 class PetugasController extends Controller
 {
@@ -18,13 +19,18 @@ class PetugasController extends Controller
             ->whereDate('waktu_masuk', today())
             ->count();
 
-        return view('petugas.dashboard', compact('todayParked'));
+        $availableSlots = AreaParkir::query()
+            ->selectRaw('COALESCE(SUM(kapasitas - terisi), 0) as total_available')
+            ->value('total_available');
+
+        return view('petugas.dashboard', compact('todayParked', 'availableSlots'));
     }
 
     public function transaksiMasuk()
     {
         $areas = AreaParkir::all();
         $tarifs = Tarif::all();
+
         return view('petugas.transaksi.masuk', compact('areas', 'tarifs'));
     }
 
@@ -36,44 +42,53 @@ class PetugasController extends Controller
             'id_tarif' => 'required|exists:tb_tarif,id_tarif',
         ]);
 
-        // Check if area has capacity
-        $area = AreaParkir::find($request->id_area);
-        if ($area->terisi >= $area->kapasitas) {
-            return back()->withErrors(['id_area' => 'Area parkir penuh.']);
+        try {
+            DB::transaction(function () use ($request): void {
+                $area = AreaParkir::whereKey($request->integer('id_area'))->lockForUpdate()->firstOrFail();
+
+                if ($area->terisi >= $area->kapasitas) {
+                    throw ValidationException::withMessages([
+                        'id_area' => 'Area parkir penuh.',
+                    ]);
+                }
+
+                $selectedTarif = Tarif::findOrFail($request->integer('id_tarif'));
+
+                $kendaraan = Kendaraan::firstOrCreate(
+                    ['plat_nomor' => $request->string('plat_nomor')->upper()->toString()],
+                    [
+                        'jenis_kendaraan' => $selectedTarif->jenis_kendaraan,
+                        'warna' => 'Tidak diketahui',
+                        'pemilik' => 'Tidak diketahui',
+                        'id_user' => Auth::id(),
+                    ]
+                );
+
+                $existing = Transaksi::where('id_kendaraan', $kendaraan->id_kendaraan)
+                    ->where('status', 'masuk')
+                    ->lockForUpdate()
+                    ->exists();
+
+                if ($existing) {
+                    throw ValidationException::withMessages([
+                        'plat_nomor' => 'Kendaraan sudah parkir.',
+                    ]);
+                }
+
+                Transaksi::create([
+                    'id_kendaraan' => $kendaraan->id_kendaraan,
+                    'waktu_masuk' => now(),
+                    'id_tarif' => $selectedTarif->id_tarif,
+                    'status' => 'masuk',
+                    'id_user' => Auth::id(),
+                    'id_area' => $area->id_area,
+                ]);
+
+                $area->increment('terisi');
+            });
+        } catch (ValidationException $exception) {
+            return back()->withErrors($exception->errors())->withInput();
         }
-
-        // Check if vehicle exists, if not create
-        $kendaraan = Kendaraan::where('plat_nomor', $request->plat_nomor)->first();
-        if (!$kendaraan) {
-            $kendaraan = Kendaraan::create([
-                'plat_nomor' => $request->plat_nomor,
-                'jenis_kendaraan' => 'unknown', // or ask for more info, but for simplicity
-                'warna' => 'unknown',
-                'pemilik' => 'unknown',
-                'id_user' => Auth::id(),
-            ]);
-        }
-
-        // Check if vehicle is already parked
-        $existing = Transaksi::where('id_kendaraan', $kendaraan->id_kendaraan)
-            ->where('status', 'masuk')
-            ->first();
-        if ($existing) {
-            return back()->withErrors(['plat_nomor' => 'Kendaraan sudah parkir.']);
-        }
-
-        // Create transaction
-        Transaksi::create([
-            'id_kendaraan' => $kendaraan->id_kendaraan,
-            'waktu_masuk' => now(),
-            'id_tarif' => $request->id_tarif,
-            'status' => 'masuk',
-            'id_user' => Auth::id(),
-            'id_area' => $request->id_area,
-        ]);
-
-        // Update area terisi
-        $area->increment('terisi');
 
         return redirect()->route('petugas.transaksi.masuk')->with('success', 'Kendaraan berhasil masuk.');
     }
@@ -90,14 +105,14 @@ class PetugasController extends Controller
         ]);
 
         $kendaraan = Kendaraan::where('plat_nomor', $request->plat_nomor)->first();
-        if (!$kendaraan) {
+        if (! $kendaraan) {
             return back()->withErrors(['plat_nomor' => 'Kendaraan tidak ditemukan.']);
         }
 
         $transaksi = Transaksi::where('id_kendaraan', $kendaraan->id_kendaraan)
             ->where('status', 'masuk')
             ->first();
-        if (!$transaksi) {
+        if (! $transaksi) {
             return back()->withErrors(['plat_nomor' => 'Kendaraan tidak sedang parkir.']);
         }
 

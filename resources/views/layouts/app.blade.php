@@ -8,13 +8,18 @@
     <script src="https://code.iconify.design/iconify-icon/1.0.8/iconify-icon.min.js"></script>
 </head>
 <body class="bg-[#f7f9fc] text-[#191c1e]">
+    @php
+        $currentUser = Auth::user();
+        $currentRole = $currentUser?->role;
+    @endphp
+
     <div class="flex min-h-screen">
         <!-- Sidebar Navigation -->
         <aside class="fixed left-0 top-0 h-screen w-60 bg-[#1E293B] shadow-[0px_12px_32px_0px_rgba(30,41,59,0.06)] z-40">
             <div class="flex flex-col h-full p-6">
                 <!-- Brand Logo -->
                 <div class="mb-10 flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <div class="w-10 h-10 rounded-lg flex items-center justify-center shrink-0">
                         <img src="/storage/parkirin_logo_transparent.svg" alt="Parkirin" class="w-full h-full object-contain">
                     </div>
                     <h1 class="text-xl font-bold text-white tracking-tight">Parkirin</h1>
@@ -22,51 +27,73 @@
 
                 <!-- Navigation Items -->
                 <nav class="flex-1 space-y-1">
-                    <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3 px-4 py-3 rounded-lg text-[#94a3b8] hover:text-white hover:bg-[rgba(255,255,255,0.1)] transition-colors {{ request()->routeIs('admin.dashboard') ? 'bg-[rgba(59,130,246,0.2)] text-white border-r-4 border-[#3b82f6]' : '' }}">
-                        <iconify-icon icon="mdi:home" style="font-size: 1.5rem;"></iconify-icon>
-                        <span class="font-medium">Dashboard</span>
-                    </a>
+                    @if($currentRole === 'admin')
+                        <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3 px-4 py-3 rounded-lg text-[#94a3b8] hover:text-white hover:bg-[rgba(255,255,255,0.1)] transition-colors {{ request()->routeIs('admin.dashboard') ? 'bg-[rgba(59,130,246,0.2)] text-white border-r-4 border-[#3b82f6]' : '' }}">
+                            <iconify-icon icon="mdi:home" style="font-size: 1.5rem;"></iconify-icon>
+                            <span class="font-medium">Dashboard</span>
+                        </a>
 
-                    <a href="{{ route('admin.users') }}" class="flex items-center gap-3 px-4 py-3 rounded-lg text-[#94a3b8] hover:text-white hover:bg-[rgba(255,255,255,0.1)] transition-colors {{ request()->routeIs('admin.users*') ? 'bg-[rgba(59,130,246,0.2)] text-white border-r-4 border-[#3b82f6]' : '' }}">
-                        <iconify-icon icon="mdi:account-multiple" style="font-size: 1.5rem;"></iconify-icon>
-                        <span class="font-medium">Manajemen User</span>
-                    </a>
+                        <a href="{{ route('admin.users') }}" class="flex items-center gap-3 px-4 py-3 rounded-lg text-[#94a3b8] hover:text-white hover:bg-[rgba(255,255,255,0.1)] transition-colors {{ request()->routeIs('admin.users*') ? 'bg-[rgba(59,130,246,0.2)] text-white border-r-4 border-[#3b82f6]' : '' }}">
+                            <iconify-icon icon="mdi:account-multiple" style="font-size: 1.5rem;"></iconify-icon>
+                            <span class="font-medium">Manajemen User</span>
+                        </a>
 
-                    <a href="{{ route('admin.tarifs') }}" class="flex items-center gap-3 px-4 py-3 rounded-lg text-[#94a3b8] hover:text-white hover:bg-[rgba(255,255,255,0.1)] transition-colors {{ request()->routeIs('admin.tarifs*') ? 'bg-[rgba(59,130,246,0.2)] text-white border-r-4 border-[#3b82f6]' : '' }}">
-                        <iconify-icon icon="mdi:currency-usd" style="font-size: 1.5rem;"></iconify-icon>
-                        <span class="font-medium">Tarif</span>
-                    </a>
+                        <a href="{{ route('admin.tarifs') }}" class="flex items-center gap-3 px-4 py-3 rounded-lg text-[#94a3b8] hover:text-white hover:bg-[rgba(255,255,255,0.1)] transition-colors {{ request()->routeIs('admin.tarifs*') ? 'bg-[rgba(59,130,246,0.2)] text-white border-r-4 border-[#3b82f6]' : '' }}">
+                            <iconify-icon icon="mdi:currency-usd" style="font-size: 1.5rem;"></iconify-icon>
+                            <span class="font-medium">Tarif</span>
+                        </a>
 
-                    <a href="{{ route('admin.areas') }}" class="flex items-center gap-3 px-4 py-3 rounded-lg text-[#94a3b8] hover:text-white hover:bg-[rgba(255,255,255,0.1)] transition-colors {{ request()->routeIs('admin.areas*') ? 'bg-[rgba(59,130,246,0.2)] text-white border-r-4 border-[#3b82f6]' : '' }}">
-                        <iconify-icon icon="mdi:map-marker" style="font-size: 1.5rem;"></iconify-icon>
-                        <span class="font-medium">Area</span>
-                    </a>
+                        <a href="{{ route('admin.areas') }}" class="flex items-center gap-3 px-4 py-3 rounded-lg text-[#94a3b8] hover:text-white hover:bg-[rgba(255,255,255,0.1)] transition-colors {{ request()->routeIs('admin.areas*') ? 'bg-[rgba(59,130,246,0.2)] text-white border-r-4 border-[#3b82f6]' : '' }}">
+                            <iconify-icon icon="mdi:map-marker" style="font-size: 1.5rem;"></iconify-icon>
+                            <span class="font-medium">Area</span>
+                        </a>
 
-                    <a href="{{ route('admin.kendaraans') }}" class="flex items-center gap-3 px-4 py-3 rounded-lg text-[#94a3b8] hover:text-white hover:bg-[rgba(255,255,255,0.1)] transition-colors {{ request()->routeIs('admin.kendaraans*') ? 'bg-[rgba(59,130,246,0.2)] text-white border-r-4 border-[#3b82f6]' : '' }}">
-                        <iconify-icon icon="mdi:car" style="font-size: 1.5rem;"></iconify-icon>
-                        <span class="font-medium">Kendaraan</span>
-                    </a>
+                        <a href="{{ route('admin.kendaraans') }}" class="flex items-center gap-3 px-4 py-3 rounded-lg text-[#94a3b8] hover:text-white hover:bg-[rgba(255,255,255,0.1)] transition-colors {{ request()->routeIs('admin.kendaraans*') ? 'bg-[rgba(59,130,246,0.2)] text-white border-r-4 border-[#3b82f6]' : '' }}">
+                            <iconify-icon icon="mdi:car" style="font-size: 1.5rem;"></iconify-icon>
+                            <span class="font-medium">Kendaraan</span>
+                        </a>
 
-                    <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg text-[#94a3b8] hover:text-white hover:bg-[rgba(255,255,255,0.1)] transition-colors">
-                        <iconify-icon icon="mdi:receipt" style="font-size: 1.5rem;"></iconify-icon>
-                        <span class="font-medium">Transaksi</span>
-                    </a>
+                        <a href="{{ route('admin.logs') }}" class="flex items-center gap-3 px-4 py-3 rounded-lg text-[#94a3b8] hover:text-white hover:bg-[rgba(255,255,255,0.1)] transition-colors {{ request()->routeIs('admin.logs*') ? 'bg-[rgba(59,130,246,0.2)] text-white border-r-4 border-[#3b82f6]' : '' }}">
+                            <iconify-icon icon="mdi:file-document" style="font-size: 1.5rem;"></iconify-icon>
+                            <span class="font-medium">Log Aktivitas</span>
+                        </a>
+                    @elseif($currentRole === 'petugas')
+                        <a href="{{ route('petugas.dashboard') }}" class="flex items-center gap-3 px-4 py-3 rounded-lg text-[#94a3b8] hover:text-white hover:bg-[rgba(255,255,255,0.1)] transition-colors {{ request()->routeIs('petugas.dashboard') ? 'bg-[rgba(59,130,246,0.2)] text-white border-r-4 border-[#3b82f6]' : '' }}">
+                            <iconify-icon icon="mdi:home" style="font-size: 1.5rem;"></iconify-icon>
+                            <span class="font-medium">Dashboard</span>
+                        </a>
 
-                    <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg text-[#94a3b8] hover:text-white hover:bg-[rgba(255,255,255,0.1)] transition-colors">
-                        <iconify-icon icon="mdi:file-document" style="font-size: 1.5rem;"></iconify-icon>
-                        <span class="font-medium">Laporan</span>
-                    </a>
+                        <a href="{{ route('petugas.transaksi.masuk') }}" class="flex items-center gap-3 px-4 py-3 rounded-lg text-[#94a3b8] hover:text-white hover:bg-[rgba(255,255,255,0.1)] transition-colors {{ request()->routeIs('petugas.transaksi.masuk*') ? 'bg-[rgba(59,130,246,0.2)] text-white border-r-4 border-[#3b82f6]' : '' }}">
+                            <iconify-icon icon="mdi:arrow-down-bold-circle" style="font-size: 1.5rem;"></iconify-icon>
+                            <span class="font-medium">Kendaraan Masuk</span>
+                        </a>
+
+                        <a href="{{ route('petugas.transaksi.keluar') }}" class="flex items-center gap-3 px-4 py-3 rounded-lg text-[#94a3b8] hover:text-white hover:bg-[rgba(255,255,255,0.1)] transition-colors {{ request()->routeIs('petugas.transaksi.keluar*') ? 'bg-[rgba(59,130,246,0.2)] text-white border-r-4 border-[#3b82f6]' : '' }}">
+                            <iconify-icon icon="mdi:arrow-up-bold-circle" style="font-size: 1.5rem;"></iconify-icon>
+                            <span class="font-medium">Kendaraan Keluar</span>
+                        </a>
+                    @elseif($currentRole === 'owner')
+                        <a href="{{ route('owner.dashboard') }}" class="flex items-center gap-3 px-4 py-3 rounded-lg text-[#94a3b8] hover:text-white hover:bg-[rgba(255,255,255,0.1)] transition-colors {{ request()->routeIs('owner.dashboard') ? 'bg-[rgba(59,130,246,0.2)] text-white border-r-4 border-[#3b82f6]' : '' }}">
+                            <iconify-icon icon="mdi:home" style="font-size: 1.5rem;"></iconify-icon>
+                            <span class="font-medium">Dashboard</span>
+                        </a>
+
+                        <a href="{{ route('owner.rekap') }}" class="flex items-center gap-3 px-4 py-3 rounded-lg text-[#94a3b8] hover:text-white hover:bg-[rgba(255,255,255,0.1)] transition-colors {{ request()->routeIs('owner.rekap*') ? 'bg-[rgba(59,130,246,0.2)] text-white border-r-4 border-[#3b82f6]' : '' }}">
+                            <iconify-icon icon="mdi:file-document" style="font-size: 1.5rem;"></iconify-icon>
+                            <span class="font-medium">Rekap Transaksi</span>
+                        </a>
+                    @endif
                 </nav>
 
                 <!-- User Profile Section -->
                 <div class="border-t border-[#0f172a] pt-6">
                     <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-[#0058be] to-[#2170e4] flex items-center justify-center text-white font-bold text-sm">
-                            {{ strtoupper(substr(Auth::user()->nama_lengkap, 0, 1)) }}
+                        <div class="w-10 h-10 rounded-full bg-linear-to-br from-[#0058be] to-[#2170e4] flex items-center justify-center text-white font-bold text-sm">
+                            {{ strtoupper(substr($currentUser->nama_lengkap, 0, 1)) }}
                         </div>
                         <div class="flex-1">
-                            <p class="text-sm font-semibold text-white truncate">{{ Auth::user()->nama_lengkap }}</p>
-                            <p class="text-xs text-[#64748b] truncate capitalize">{{ Auth::user()->role }}</p>
+                            <p class="text-sm font-semibold text-white truncate">{{ $currentUser->nama_lengkap }}</p>
+                            <p class="text-xs text-[#64748b] truncate capitalize">{{ $currentUser->role }}</p>
                         </div>
                     </div>
                 </div>
@@ -98,7 +125,7 @@
                         <div class="w-px h-8 bg-[rgba(194,198,214,0.3)]"></div>
 
                         <div class="flex items-center gap-2">
-                            <div class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <div class="w-8 h-8 rounded-lg flex items-center justify-center shrink-0">
                                 <img src="/storage/parkirin_logo_transparent.svg" alt="Parkirin" class="w-full h-full object-contain">
                             </div>
                             <p class="text-sm font-semibold text-gray-900">Parkirin</p>

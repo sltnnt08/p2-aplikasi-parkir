@@ -10,7 +10,7 @@
             <h1 class="text-3xl font-semibold tracking-tight text-[#191c1e]">Manajemen Tarif</h1>
             <p class="text-sm text-[#64748b] mt-1">Kelola tarif parkir per jenis kendaraan</p>
         </div>
-        <a href="{{ route('admin.tarifs.create') }}" class="px-6 py-2.5 bg-gradient-to-r from-[#0058be] to-[#3B82F6] text-white text-sm font-semibold rounded-lg hover:shadow-[0px_12px_32px_rgba(0,88,190,0.15)] active:scale-95 transition-all duration-200">
+        <a href="{{ route('admin.tarifs.create') }}" class="px-6 py-2.5 bg-linear-to-r from-[#0058be] to-[#3B82F6] text-white text-sm font-semibold rounded-lg hover:shadow-[0px_12px_32px_rgba(0,88,190,0.15)] active:scale-95 transition-all duration-200">
             + Tambah Tarif
         </a>
     </div>
@@ -18,7 +18,7 @@
     <!-- Success Message -->
     @if(session('success'))
         <div class="p-4 bg-[#ecfdf5] border border-[#d1fae5] rounded-lg flex items-center gap-3">
-            <svg class="w-5 h-5 text-[#059669] flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+            <svg class="w-5 h-5 text-[#059669] shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
             <p class="text-sm font-medium text-[#065f46]">{{ session('success') }}</p>
         </div>
     @endif
@@ -63,13 +63,19 @@
                     @empty
                         <tr>
                             <td colspan="3" class="px-6 py-8 text-center">
-                                <p class="text-[#64748b]">Belum ada data tarif</p>
+                                <p class="text-[#64748b]">Belum ada data tarif. Tambahkan tarif untuk setiap jenis kendaraan.</p>
                             </td>
                         </tr>
                     @endforelse
                 </tbody>
             </table>
         </div>
+
+        @if($tarifs->hasPages())
+            <div class="px-6 py-4 border-t border-[rgba(194,198,214,0.1)]">
+                {{ $tarifs->links() }}
+            </div>
+        @endif
     </div>
 </div>
 @endsection

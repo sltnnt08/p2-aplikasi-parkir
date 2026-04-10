@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\LogAktivitas;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
@@ -25,8 +24,9 @@ class AuthController extends Controller
 
         if (Auth::attempt($credentials)) {
             $user = Auth::user();
-            if (!$user->status_aktif) {
+            if (! $user->status_aktif) {
                 Auth::logout();
+
                 return back()->withErrors(['username' => 'Akun tidak aktif.']);
             }
 
@@ -47,6 +47,7 @@ class AuthController extends Controller
                     return redirect()->route('owner.dashboard');
                 default:
                     Auth::logout();
+
                     return back()->withErrors(['username' => 'Role tidak valid.']);
             }
         }
